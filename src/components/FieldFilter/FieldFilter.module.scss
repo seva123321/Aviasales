@@ -1,0 +1,55 @@
+$selected-color: #f1fcff;
+$text-color: #4a4a4a;
+$checkbox-color: #2196f3;
+
+.fields {
+  //   padding: 20px;
+  width: 232px;
+  height: 252px;
+  background-color: #fff;
+  border-radius: 10px 10px;
+  &__header {
+    padding: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  &__item {
+    font-size: 12px;
+    list-style: none;
+    & > label {
+      display: block;
+      padding: 10px 0;
+      padding-left: 3.5em;
+      margin-bottom: 0.25em;
+      &:hover {
+        background-color: $selected-color;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__checkbox {
+    position: absolute;
+    margin-left: -1.5em;
+    margin-top: 0.1em;
+    width: 0.9em;
+    height: 0.9em;
+    box-shadow: 0 0 0 0.1em $checkbox-color;
+    border-radius: 0.05em;
+    background-color: white;
+  }
+  &__checkinput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    &:checked + .fields__checkbox {
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-image: url('./галочка.svg');
+    }
+  }
+}

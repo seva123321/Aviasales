@@ -1,0 +1,30 @@
+$main-color: #2196f3;
+$bgc-btn: #fff;
+
+.tabs {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto;
+  border-radius: 10px 10px;
+  overflow: hidden;
+  border: 1px solid #dfe5ec;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  &__item {
+    border: 1px solid #dfe5ec;
+    padding: 15px;
+    list-style: none;
+    background-color: $bgc-btn;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.active {
+  height: auto;
+  align-content: center;
+  background-color: $main-color;
+  color: #fff;
+  //   box-shadow: 0 5px 10px black;
+}
