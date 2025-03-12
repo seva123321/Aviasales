@@ -1,3 +1,3 @@
-import FieldFilter from "./FieldFilter";
+import FieldFilter from './FieldFilter'
 
 export default FieldFilter

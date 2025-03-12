@@ -1,8 +1,9 @@
 import React from 'react'
+
 import FieldFilter from '@/components/FieldFilter'
 import Tabs from '@/components/Tabs'
 
-const MainPage = () => {
+function MainPage() {
   return (
     <div style={{ backgroundColor: '#F1FCFF' }}>
       <Tabs />

@@ -1,7 +1,8 @@
 import React from 'react'
+
 import MainPage from './pages/MainPage'
 
-const App = () => {
+function App() {
   return <MainPage />
 }
 
