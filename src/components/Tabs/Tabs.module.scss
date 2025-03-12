@@ -2,18 +2,27 @@ $main-color: #2196f3;
 $bgc-btn: #fff;
 
 .tabs {
-  display: flex;
-  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
   border-radius: 10px 10px;
   overflow: hidden;
   border: 1px solid #dfe5ec;
   margin-bottom: 20px;
   text-transform: uppercase;
+  user-select: none;
+  font-size: 12px;
+  line-height: 20px;
+
+  @media screen and (max-width: 520px) {
+    display: block;
+  }
+
   &__item {
     border: 1px solid #dfe5ec;
     padding: 15px;
     list-style: none;
+    text-align: center;
     background-color: $bgc-btn;
     &:hover {
       cursor: pointer;

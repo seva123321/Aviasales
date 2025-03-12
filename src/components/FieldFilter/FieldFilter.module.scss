@@ -1,13 +1,25 @@
 $selected-color: #f1fcff;
 $text-color: #4a4a4a;
 $checkbox-color: #2196f3;
+$box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.09);
 
 .fields {
-  //   padding: 20px;
-  width: 232px;
+  // width: 232px;
   height: 252px;
+
   background-color: #fff;
   border-radius: 10px 10px;
+  margin-right: 20px;
+
+  box-shadow: $box-shadow;
+  -moz-box-shadow: $box-shadow;
+  -webkit-box-shadow: $box-shadow;
+
+  @media screen and (max-width: 520px) {
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
+
   &__header {
     padding: 20px;
     font-size: 12px;
@@ -17,10 +29,10 @@ $checkbox-color: #2196f3;
   &__item {
     font-size: 12px;
     list-style: none;
+    user-select: none;
     & > label {
       display: block;
-      padding: 10px 0;
-      padding-left: 3.5em;
+      padding: 10px 3.5em;
       margin-bottom: 0.25em;
       &:hover {
         background-color: $selected-color;
@@ -49,7 +61,7 @@ $checkbox-color: #2196f3;
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
-      background-image: url('./галочка.svg');
+      background-image: url('../../public/галочка.svg');
     }
   }
 }
