@@ -5,9 +5,7 @@ $bgc-btn: #fff;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
-  border-radius: 10px 10px;
   overflow: hidden;
-  border: 1px solid #dfe5ec;
   margin-bottom: 20px;
   text-transform: uppercase;
   user-select: none;
@@ -19,10 +17,25 @@ $bgc-btn: #fff;
   }
 
   &__item {
-    border: 1px solid #dfe5ec;
-    padding: 15px;
     list-style: none;
     text-align: center;
+
+    & .tabs__btn {
+      width: 100%; 
+      border-radius: 0; 
+    }
+
+    &:last-child .tabs__btn {
+      border-radius: 0 10px 10px 0; 
+    }
+    &:first-child .tabs__btn {
+      border-radius: 10px 0 0 10px; 
+    }
+  }
+
+  &__btn {
+    border: 1px solid #dfe5ec;
+    padding: 15px;
     background-color: $bgc-btn;
     &:hover {
       cursor: pointer;
@@ -35,5 +48,5 @@ $bgc-btn: #fff;
   align-content: center;
   background-color: $main-color;
   color: #fff;
-  //   box-shadow: 0 5px 10px black;
+    // box-shadow: 0 5px 10px black;
 }

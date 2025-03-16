@@ -1,4 +1,5 @@
-import { memo, useEffect, useMemo, useState, Suspense } from 'react'
+import { memo, useEffect, useMemo, Suspense } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ApiRequest from '../../service/apiRequest'
 import TicketItem from '../Ticket/TicketItem'
@@ -7,33 +8,36 @@ import style from './TicketList.module.scss'
 
 const TicketList = memo(() => {
   const api = useMemo(() => new ApiRequest(), [])
-  const [tickets, setTickets] = useState([])
+  const dispatch = useDispatch()
+  const { loading, error, data } = useSelector((state) => state.reducerData)
 
   useEffect(() => {
-    let isMounted = true
-
     const fetchData = async () => {
-      const res = await api.getSearchId()
-      const { searchId } = res
-      localStorage.setItem('searchId', searchId)
+      try {
+        dispatch({ type: 'FETCH_DATA_REQUEST' })
+        const res = await api.getSearchId()
+        const { searchId } = res
+        localStorage.setItem('searchId', searchId)
 
-      const dataTickets = await api.getTickets(searchId)
-      if (isMounted) {
-        setTickets(dataTickets.tickets.slice(0, 5)) // @TODO delete .slice(0,5)
+        const dataTickets = await api.getTickets(searchId)
+        dispatch({ type: 'FETCH_DATA_SUCCESS', payload: dataTickets })
+      } catch (err) {
+        dispatch({ type: 'FETCH_DATA_FAILURE', payload: err })
       }
     }
 
     fetchData()
+  }, [api, dispatch])
 
-    return () => {
-      isMounted = false // Очистка при размонтировании
-    }
-  }, [api])
+  if (loading) return <h1>Loading...</h1>
+  if (error) return <h1>Error</h1>
+
+  const dataTickets = data.tickets ? data.tickets.slice(0, 5) : []
 
   return (
     <Suspense fallback={<h1>Loading...</h1>}>
       <ul>
-        {tickets?.map((ticket) => {
+        {dataTickets.map((ticket) => {
           const { price, carrier, segments } = ticket
           const key = `${price}${carrier}${segments[0]?.date}`
 
