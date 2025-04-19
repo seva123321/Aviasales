@@ -1,6 +1,19 @@
+import { useDispatch, useSelector } from 'react-redux'
+
+import {
+  filterAll,
+  filterWithout,
+  filterOneTransfer,
+  filterTwoTransfer,
+  filterThreeTransfer,
+} from '@/store/actions'
+
 import style from './FieldFilter.module.scss'
 
 function FieldFilter() {
+  const dispatch = useDispatch()
+  const checkboxState = useSelector((state) => state.reducerFilter)
+
   return (
     <div className={style.fields}>
       <h3 className={style.fields__header}>Количество пересадок</h3>
@@ -10,8 +23,10 @@ function FieldFilter() {
             <input
               id="all-check"
               type="checkbox"
-              name=""
-              className={style.fields__checkinput}
+              name="all"
+              className={style.fields__checkInput}
+              checked={checkboxState.all}
+              onChange={() => dispatch(filterAll())}
             />
             <span className={style.fields__checkbox} />
             Все
@@ -22,8 +37,10 @@ function FieldFilter() {
             <input
               id="without-check"
               type="checkbox"
-              name=""
-              className={style.fields__checkinput}
+              name="without"
+              className={style.fields__checkInput}
+              checked={checkboxState.without}
+              onChange={() => dispatch(filterWithout())}
             />
             <span className={style.fields__checkbox} />
             Без пересадок
@@ -34,8 +51,10 @@ function FieldFilter() {
             <input
               id="oneTransfer-check"
               type="checkbox"
-              name=""
-              className={style.fields__checkinput}
+              name="oneTransfer"
+              className={style.fields__checkInput}
+              checked={checkboxState.one}
+              onChange={() => dispatch(filterOneTransfer())}
             />
             <span className={style.fields__checkbox} />
             <span>1 пересадка</span>
@@ -46,8 +65,10 @@ function FieldFilter() {
             <input
               id="twoTransfer-check"
               type="checkbox"
-              name=""
-              className={style.fields__checkinput}
+              name="twoTransfer"
+              className={style.fields__checkInput}
+              checked={checkboxState.two}
+              onChange={() => dispatch(filterTwoTransfer())}
             />
             <span className={style.fields__checkbox} />
             <span>2 пересадки</span>
@@ -58,8 +79,10 @@ function FieldFilter() {
             <input
               id="threeTransfer-check"
               type="checkbox"
-              name=""
-              className={style.fields__checkinput}
+              name="threeTransfer"
+              className={style.fields__checkInput}
+              checked={checkboxState.three}
+              onChange={() => dispatch(filterThreeTransfer())}
             />
             <span className={style.fields__checkbox} />
             <span>3 пересадки</span>
