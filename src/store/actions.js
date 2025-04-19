@@ -15,7 +15,7 @@ export function filterAll() {
   }
 }
 
-export function filterWIthout() {
+export function filterWithout() {
   return {
     type: WITHOUT_TRANSFER,
   }

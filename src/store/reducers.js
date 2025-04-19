@@ -55,20 +55,47 @@ export const reducerSorter = (state = initialStateSorter, action) => {
   }
 }
 
-const initialStateFilter = {}
+const initialStateFilter = {
+  all: false,
+  without: false,
+  one: false,
+  two: false,
+  three: false,
+}
 
 export const reducerFilter = (state = initialStateFilter, action) => {
+  const calculateAllState = (stateN) =>
+    // eslint-disable-next-line implicit-arrow-linebreak
+    [stateN.without, stateN.one, stateN.two, stateN.three].every(Boolean)
+
   switch (action.type) {
-    case ALL_TRANSFER:
-      return {}
-    case WITHOUT_TRANSFER:
-      return {}
-    case ONE_TRANSFER:
-      return {}
-    case TWO_TRANSFER:
-      return {}
-    case THREE_TRANSFER:
-      return {}
+    case ALL_TRANSFER: {
+      const newAllState = !state.all
+      return {
+        ...state,
+        all: newAllState,
+        without: newAllState,
+        one: newAllState,
+        two: newAllState,
+        three: newAllState,
+      }
+    }
+    case WITHOUT_TRANSFER: {
+      const newState = { ...state, without: !state.without }
+      return { ...newState, all: calculateAllState(newState) }
+    }
+    case ONE_TRANSFER: {
+      const newState = { ...state, one: !state.one }
+      return { ...newState, all: calculateAllState(newState) }
+    }
+    case TWO_TRANSFER: {
+      const newState = { ...state, two: !state.two }
+      return { ...newState, all: calculateAllState(newState) }
+    }
+    case THREE_TRANSFER: {
+      const newState = { ...state, three: !state.three }
+      return { ...newState, all: calculateAllState(newState) }
+    }
 
     default:
       return state
