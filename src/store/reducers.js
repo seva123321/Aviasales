@@ -34,15 +34,9 @@ export const reducerData = (state = initialStateData, action) => {
   }
 }
 
-const initialStateSorter = {}
-
-export const reducerSorter = (state = initialStateSorter, action) => {
+export const reducerSorter = (state = initialStateData.data, action) => {
   switch (action.type) {
     case CHEAPEST_VARIANT: {
-      //   const { data } = state
-      //   console.log('state ', state)
-      //   console.log('reducer ', data)
-
       return { ...state }
     }
     case FASTEST_VARIANT:

@@ -7,6 +7,9 @@ import {
   CHEAPEST_VARIANT,
   FASTEST_VARIANT,
   OPTIMAL_VARIANT,
+  FETCH_DATA_REQUEST,
+  FETCH_DATA_SUCCESS,
+  FETCH_DATA_FAILURE,
 } from './type'
 
 export function filterAll() {
@@ -51,5 +54,22 @@ export function sortFastest() {
 export function sortOptimal() {
   return {
     type: OPTIMAL_VARIANT,
+  }
+}
+export function ticketsLoadingStarted() {
+  return {
+    type: FETCH_DATA_REQUEST,
+  }
+}
+export function ticketsLoaded(payload) {
+  return {
+    type: FETCH_DATA_SUCCESS,
+    payload,
+  }
+}
+export function ticketsLoadingFailed(payload) {
+  return {
+    type: FETCH_DATA_FAILURE,
+    payload,
   }
 }

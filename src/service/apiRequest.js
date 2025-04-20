@@ -1,4 +1,4 @@
-class apiRequest {
+class ApiRequest {
   #baseURL = 'https://aviasales-test-api.kata.academy'
 
   async #getData(url) {
@@ -14,13 +14,20 @@ class apiRequest {
   }
 
   async getSearchId() {
+    if (localStorage.getItem('searchId')) {
+      return localStorage.getItem('searchId')
+    }
+
     const url = new URL('search', this.#baseURL)
     const result = await this.#getData(url)
+    const { searchId } = result
+    localStorage.setItem('searchId', searchId)
 
-    return result
+    return searchId
   }
 
   async getTickets(searchId) {
+    if (!searchId) throw new Error('Invalid searchId')
     const url = new URL('tickets', this.#baseURL)
     url.searchParams.set('searchId', searchId)
 
@@ -30,4 +37,4 @@ class apiRequest {
   }
 }
 
-export default apiRequest
+export default ApiRequest
