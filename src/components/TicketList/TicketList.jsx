@@ -14,8 +14,20 @@ const TicketList = memo(() => {
     dispatch(fetchTickets())
   }, [dispatch])
 
-  if (loading) return <h1>Loading...</h1>
-  if (error) return <h1>Error</h1>
+  if (loading) {
+    return (
+      <div className={style['loader--wrapper']}>
+        <span className={style.loader} />
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className={style['loader--wrapper']}>
+        <h1>Ошибка</h1>
+      </div>
+    )
+  }
 
   const dataTickets = data.tickets ? data.tickets.slice(0, 5) : []
 
@@ -25,6 +37,7 @@ const TicketList = memo(() => {
         {dataTickets.map((ticket) => {
           const { price, carrier, segments } = ticket
           const key = `${price}${carrier}${segments[0]?.date}`
+          // console.log('ticket > ', ticket)
 
           return <TicketItem {...ticket} key={key} />
         })}
