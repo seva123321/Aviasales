@@ -1,4 +1,5 @@
 import {
+  sortCheapest,
   ticketsLoadingStarted,
   ticketsLoaded,
   ticketsLoadingFailed,
@@ -19,6 +20,7 @@ const fetchTickets = () => async (dispatch) => {
         // eslint-disable-next-line no-await-in-loop
         const dataTickets = await api.getTickets(searchId)
         dispatch(ticketsLoaded(dataTickets))
+        dispatch(sortCheapest(dataTickets))
         return
       } catch (err) {
         retryCount++
