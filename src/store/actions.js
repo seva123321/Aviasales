@@ -41,19 +41,22 @@ export function filterThreeTransfer() {
     type: THREE_TRANSFER,
   }
 }
-export function sortCheapest() {
+export function sortCheapest(payload) {
   return {
     type: CHEAPEST_VARIANT,
+    payload,
   }
 }
-export function sortFastest() {
+export function sortFastest(payload) {
   return {
     type: FASTEST_VARIANT,
+    payload,
   }
 }
-export function sortOptimal() {
+export function sortOptimal(payload) {
   return {
     type: OPTIMAL_VARIANT,
+    payload,
   }
 }
 export function ticketsLoadingStarted() {
