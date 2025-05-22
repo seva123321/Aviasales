@@ -10,6 +10,7 @@ import {
   ONE_TRANSFER,
   TWO_TRANSFER,
   THREE_TRANSFER,
+  SHOW_MORE,
   FETCH_DATA_REQUEST,
   FETCH_DATA_SUCCESS,
   FETCH_DATA_FAILURE,
@@ -19,25 +20,37 @@ const initialStateData = {
   loading: false,
   error: null,
   data: {},
+  displayedData: [],
+  currentPage: 0,
+  pageSize: 5,
 }
 
 export const reducerData = (state = initialStateData, action) => {
   switch (action.type) {
     case CHEAPEST_VARIANT: {
-      // console.log('CHEAPEST_VARIANT > ', state.data)
       if (!state.data?.tickets) return state
-      return {
+      const newState = {
         ...state,
         data: {
           ...state.data,
           tickets: [...state.data.tickets].sort((a, b) => a.price - b.price),
         },
       }
+
+      return {
+        ...newState,
+        displayedData: [
+          ...newState.data.tickets.slice(
+            0,
+            newState.pageSize * newState.currentPage + newState.pageSize
+          ),
+        ],
+      }
     }
     case FASTEST_VARIANT: {
-      // console.log('FASTEST_VARIANT > ', state.data)
       if (!state.data?.tickets) return state
-      return {
+
+      const newState = {
         ...state,
         data: {
           ...state.data,
@@ -46,9 +59,32 @@ export const reducerData = (state = initialStateData, action) => {
           ),
         },
       }
+      return {
+        ...newState,
+        displayedData: [
+          ...newState.data.tickets.slice(
+            0,
+            newState.pageSize * newState.currentPage + newState.pageSize
+          ),
+        ],
+      }
     }
     case OPTIMAL_VARIANT:
       return state
+
+    case SHOW_MORE: {
+      if (!state.data?.tickets) return state
+      const newState = { ...state, currentPage: state.currentPage + 1 }
+      return {
+        ...newState,
+        displayedData: [
+          ...newState.data.tickets.slice(
+            0,
+            newState.pageSize * newState.currentPage + newState.pageSize
+          ),
+        ],
+      }
+    }
 
     case FETCH_DATA_REQUEST:
       return { ...state, loading: true, error: null }
@@ -60,23 +96,6 @@ export const reducerData = (state = initialStateData, action) => {
       return state
   }
 }
-
-// export const reducerSorter = (state = initialStateData, action) => {
-//   switch (action.type) {
-//     case CHEAPEST_VARIANT: {
-//       console.log('CHEAPEST_VARIANT > ', state)
-
-//       return { ...state }
-//     }
-//     case FASTEST_VARIANT:
-//       return {}
-//     case OPTIMAL_VARIANT:
-//       return {}
-
-//     default:
-//       return state
-//   }
-// }
 
 const initialStateFilter = {
   all: false,
@@ -127,6 +146,5 @@ export const reducerFilter = (state = initialStateFilter, action) => {
 
 export const reducer = combineReducers({
   reducerData,
-  // reducerSorter,
   reducerFilter,
 })
