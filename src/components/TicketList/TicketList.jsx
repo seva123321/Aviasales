@@ -1,18 +1,27 @@
 import { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import TicketItem from '@/components/Ticket/TicketItem'
+import TicketItem from '@/components/TicketItem'
 import fetchTickets from '@/store/asyncTickets'
+import { ticketsShowMore } from '@/store/actions'
 
 import style from './TicketList.module.scss'
 
 const TicketList = memo(() => {
   const dispatch = useDispatch()
-  const { loading, error, data } = useSelector((state) => state.reducerData)
+  const { loading, error, data, displayedData } = useSelector((state) => {
+    console.log('state > ', state)
+    return state.reducerData
+  })
 
   useEffect(() => {
     dispatch(fetchTickets())
   }, [dispatch])
+
+  const handleShowMoreClick = () => {
+    dispatch(ticketsShowMore(data))
+  }
+  console.log('displayedData > ', displayedData)
 
   if (loading) {
     return (
@@ -29,12 +38,10 @@ const TicketList = memo(() => {
     )
   }
 
-  const dataTickets = data.tickets ? data.tickets.slice(0, 5) : []
-
   return (
     <>
       <ul>
-        {dataTickets.map((ticket) => {
+        {displayedData?.map((ticket) => {
           const { price, carrier, segments } = ticket
           const key = `${price}${carrier}${segments[0]?.date}`
           // console.log('ticket > ', ticket)
@@ -42,7 +49,11 @@ const TicketList = memo(() => {
           return <TicketItem {...ticket} key={key} />
         })}
       </ul>
-      <button className={style.button} type="button">
+      <button
+        className={style.button}
+        onClick={handleShowMoreClick}
+        type="button"
+      >
         Показать еще 5 билетов!
       </button>
     </>
