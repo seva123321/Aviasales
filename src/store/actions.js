@@ -7,6 +7,7 @@ import {
   CHEAPEST_VARIANT,
   FASTEST_VARIANT,
   OPTIMAL_VARIANT,
+  SHOW_MORE,
   FETCH_DATA_REQUEST,
   FETCH_DATA_SUCCESS,
   FETCH_DATA_FAILURE,
@@ -73,6 +74,13 @@ export function ticketsLoaded(payload) {
 export function ticketsLoadingFailed(payload) {
   return {
     type: FETCH_DATA_FAILURE,
+    payload,
+  }
+}
+
+export function ticketsShowMore(payload) {
+  return {
+    type: SHOW_MORE,
     payload,
   }
 }
