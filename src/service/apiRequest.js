@@ -1,5 +1,7 @@
+import { BASE_URL } from '@/service/constant'
+
 class ApiRequest {
-  #baseURL = 'https://aviasales-test-api.kata.academy'
+  #baseURL = BASE_URL
 
   async #getData(url) {
     const res = await fetch(url)
@@ -32,7 +34,7 @@ class ApiRequest {
     url.searchParams.set('searchId', searchId)
 
     const result = await this.#getData(url)
-
+    localStorage.removeItem('searchId')
     return result
   }
 }
