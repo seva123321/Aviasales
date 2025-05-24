@@ -31,6 +31,7 @@ export const reducerData = (state = initialStateData, action) => {
       if (!state.data?.tickets) return state
       const newState = {
         ...state,
+        currentPage: 0,
         data: {
           ...state.data,
           tickets: [...state.data.tickets].sort((a, b) => a.price - b.price),
@@ -52,6 +53,7 @@ export const reducerData = (state = initialStateData, action) => {
 
       const newState = {
         ...state,
+        currentPage: 0,
         data: {
           ...state.data,
           tickets: [...state.data.tickets].sort(
@@ -69,8 +71,32 @@ export const reducerData = (state = initialStateData, action) => {
         ],
       }
     }
-    case OPTIMAL_VARIANT:
-      return state
+    case OPTIMAL_VARIANT: {
+      if (!state.data?.tickets) return state
+
+      const newState = {
+        ...state,
+        currentPage: 0,
+        data: {
+          ...state.data,
+          tickets: [...state.data.tickets].sort((a, b) => {
+            const restCostPerMinute = 20
+            const optVar1 = a.price + a.segments[0].duration * restCostPerMinute
+            const optVar2 = b.price + b.segments[0].duration * restCostPerMinute
+            return optVar1 - optVar2
+          }),
+        },
+      }
+      return {
+        ...newState,
+        displayedData: [
+          ...newState.data.tickets.slice(
+            0,
+            newState.pageSize * newState.currentPage + newState.pageSize
+          ),
+        ],
+      }
+    }
 
     case SHOW_MORE: {
       if (!state.data?.tickets) return state
@@ -89,6 +115,14 @@ export const reducerData = (state = initialStateData, action) => {
     case FETCH_DATA_REQUEST:
       return { ...state, loading: true, error: null }
     case FETCH_DATA_SUCCESS:
+      // return {
+      //   ...state,
+      //   loading: false,
+      //   data: {
+      //     tickets: [...state.data.tickets, ...action.payload.tickets],
+      //     stop: action.payload.stop,
+      //   },
+      // }
       return { ...state, loading: false, data: action.payload }
     case FETCH_DATA_FAILURE:
       return { ...state, loading: false, error: action.payload }
@@ -148,3 +182,22 @@ export const reducer = combineReducers({
   reducerData,
   reducerFilter,
 })
+
+export const loggerMiddleWare = (store) => (next) => (action) => {
+  // console.log('logger before > ', store.getState())
+  const result = next(action)
+  console.log('LOGGER reducerData after> ', store.getState()?.reducerData)
+  return result
+}
+
+// export const schedulerMiddleware = (store) => (next) => (action) => {
+//   const delayMW = action?.meta?.delay
+//   if (!delayMW) return next(action)
+
+//   const timerId = setTimeout(() => next(action), delayMW)
+
+//   return () => {
+//     console.log('clianing')
+//     clearTimeout(timerId)
+//   }
+// }
