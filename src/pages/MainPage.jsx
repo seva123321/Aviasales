@@ -1,6 +1,7 @@
 import FieldFilter from '@/components/FieldFilter'
 import Tabs from '@/components/Tabs'
 import TicketList from '@/components/TicketList'
+import LoaderTickets from '@/components/LoaderTickets'
 import logoPlane from '@/public/logoPlane.png'
 
 import style from './MainPage.module.scss'
@@ -23,6 +24,7 @@ function MainPage() {
       <div className={style.wrapper}>
         <FieldFilter />
         <div>
+          <LoaderTickets />
           <Tabs />
           <TicketList />
         </div>
