@@ -9,19 +9,17 @@ import style from './TicketList.module.scss'
 
 const TicketList = memo(() => {
   const dispatch = useDispatch()
-  const { loading, error, data, displayedData } = useSelector((state) => {
-    console.log('state > ', state)
-    return state.reducerData
-  })
+  const loading = useSelector((state) => state.loading)
+  const error = useSelector((state) => state.error)
+  const displayedData = useSelector((state) => state.displayedData)
 
   useEffect(() => {
     dispatch(fetchTickets())
   }, [dispatch])
 
   const handleShowMoreClick = () => {
-    dispatch(ticketsShowMore(data))
+    dispatch(ticketsShowMore())
   }
-  console.log('displayedData > ', displayedData)
 
   if (loading) {
     return (
@@ -40,22 +38,29 @@ const TicketList = memo(() => {
 
   return (
     <>
-      <ul>
-        {displayedData?.map((ticket) => {
-          const { price, carrier, segments } = ticket
-          const key = `${price}${carrier}${segments[0]?.date}`
-          // console.log('ticket > ', ticket)
+      {displayedData?.length ? (
+        <ul>
+          {displayedData?.map((ticket) => {
+            const { price, carrier, segments } = ticket
+            const key = `${price}${carrier}${segments[0]?.date}`
 
-          return <TicketItem {...ticket} key={key} />
-        })}
-      </ul>
-      <button
-        className={style.button}
-        onClick={handleShowMoreClick}
-        type="button"
-      >
-        Показать еще 5 билетов!
-      </button>
+            return <TicketItem {...ticket} key={key} />
+          })}
+        </ul>
+      ) : (
+        <div className={style['loader--wrapper']}>
+          Рейсов, подходящих под заданные фильтры, не найдено
+        </div>
+      )}
+      {displayedData?.length > 0 && (
+        <button
+          className={style.button}
+          onClick={handleShowMoreClick}
+          type="button"
+        >
+          Показать еще 5 билетов!
+        </button>
+      )}
     </>
   )
 })

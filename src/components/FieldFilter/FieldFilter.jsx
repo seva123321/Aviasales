@@ -12,7 +12,7 @@ import style from './FieldFilter.module.scss'
 
 function FieldFilter() {
   const dispatch = useDispatch()
-  const checkboxState = useSelector((state) => state.reducerFilter)
+  const checkboxState = useSelector((state) => state.filter)
 
   return (
     <div className={style.fields}>

@@ -34,6 +34,8 @@ class ApiRequest {
     url.searchParams.set('searchId', searchId)
 
     const result = await this.#getData(url)
+
+    // if (result.stop) localStorage.removeItem('searchId')
     localStorage.removeItem('searchId')
     return result
   }
