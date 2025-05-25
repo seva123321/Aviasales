@@ -1,26 +1,25 @@
 import { useState } from 'react'
 import classNames from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { sortCheapest, sortFastest, sortOptimal } from '@/store/actions'
 
 import style from './Tabs.module.scss'
 
 function Tabs() {
-  const [activeButton, setActiveButton] = useState('btn-cheap')
+  const [activeButton, setActiveButton] = useState('')
   const dispatch = useDispatch()
-  const { data } = useSelector((state) => state.reducerData)
 
   const handleClickCheap = () => {
-    dispatch(sortCheapest(data))
+    dispatch(sortCheapest())
     setActiveButton('btn-cheap')
   }
   const handleClickFast = () => {
-    dispatch(sortFastest(data))
+    dispatch(sortFastest())
     setActiveButton('btn-fast')
   }
   const handleClickOpt = () => {
-    dispatch(sortOptimal(data))
+    dispatch(sortOptimal())
     setActiveButton('btn-opt')
   }
 

@@ -11,6 +11,7 @@ import {
   FETCH_DATA_REQUEST,
   FETCH_DATA_SUCCESS,
   FETCH_DATA_FAILURE,
+  FETCH_DATA_ALL_LOADED,
 } from './type'
 
 export function filterAll() {
@@ -42,22 +43,19 @@ export function filterThreeTransfer() {
     type: THREE_TRANSFER,
   }
 }
-export function sortCheapest(payload) {
+export function sortCheapest() {
   return {
     type: CHEAPEST_VARIANT,
-    payload,
   }
 }
-export function sortFastest(payload) {
+export function sortFastest() {
   return {
     type: FASTEST_VARIANT,
-    payload,
   }
 }
-export function sortOptimal(payload) {
+export function sortOptimal() {
   return {
     type: OPTIMAL_VARIANT,
-    payload,
   }
 }
 export function ticketsLoadingStarted() {
@@ -77,10 +75,14 @@ export function ticketsLoadingFailed(payload) {
     payload,
   }
 }
+export function ticketsAllLoaded() {
+  return {
+    type: FETCH_DATA_ALL_LOADED,
+  }
+}
 
-export function ticketsShowMore(payload) {
+export function ticketsShowMore() {
   return {
     type: SHOW_MORE,
-    payload,
   }
 }
