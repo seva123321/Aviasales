@@ -1,8 +1,8 @@
 import {
-  sortCheapest,
   ticketsLoadingStarted,
   ticketsLoaded,
   ticketsLoadingFailed,
+  ticketsAllLoaded,
 } from '@/store/actions'
 import ApiRequest from '@/service/apiRequest'
 
@@ -11,20 +11,32 @@ const api = new ApiRequest()
 const fetchTickets = () => async (dispatch) => {
   dispatch(ticketsLoadingStarted())
   try {
+    let tempNumber = 0
     let retryCount = 0
-    const maxCount = 5
+    const maxRetries = 5
+    let allTickets = []
+    let stop = false
     const searchId = await api.getSearchId()
 
-    while (retryCount < maxCount) {
+    while (!stop && retryCount < maxRetries) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        const dataTickets = await api.getTickets(searchId)
-        dispatch(ticketsLoaded(dataTickets))
-        dispatch(sortCheapest(dataTickets))
-        return
+        const { tickets, stop: isStop } = await api.getTickets(searchId)
+        allTickets = [...allTickets, ...tickets]
+
+        if (!tempNumber) dispatch(ticketsLoaded({ tickets, stop: isStop }))
+
+        tempNumber++
+        retryCount = 0
+        stop = isStop
+
+        if (stop) {
+          dispatch(ticketsAllLoaded())
+          dispatch(ticketsLoaded({ tickets: allTickets, stop: true }))
+          return
+        }
       } catch (err) {
-        retryCount++
-        if (retryCount >= maxCount) throw err
+        if (++retryCount >= maxRetries) throw err
         // eslint-disable-next-line no-await-in-loop
         await new Promise((resolve) => {
           setTimeout(resolve, 1000)
