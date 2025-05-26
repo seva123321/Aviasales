@@ -96,28 +96,44 @@ export const fetchTickets = createAsyncThunk(
 export const fetchData = createAsyncThunk(
   'data/fetchData',
   async (_, { dispatch, rejectWithValue }) => {
-    // let tempNumber = 0
     let retryCount = 0
     const maxRetries = 5
     let allTickets = []
     let stop = false
+
     try {
       // 1. Получаем searchId
       const searchId = await dispatch(fetchSearchId()).unwrap()
       if (!searchId) throw new Error('Не удалось получить searchId')
 
+      await dispatch(fetchTickets(searchId)).unwrap()
+      if (stop) return
+      // 2. Получаем первую пачку
+      const firstBatch = await api.getTickets(searchId)
+      dispatch({
+        type: 'data/tickets/fulfilled',
+        payload: {
+          tickets: firstBatch.tickets,
+          stop: firstBatch.stop,
+        },
+      })
+
       while (!stop && retryCount < maxRetries) {
         try {
-          // 2. Получаем tickets
-          const ticketsData = await dispatch(fetchTickets(searchId)).unwrap()
-
-          allTickets = [...allTickets, ...ticketsData.tickets]
-          // tempNumber++
-          retryCount = 0
-          stop = ticketsData.stop
+          // 3. Получаем tickets
+          const { tickets, stop: isStop } = await api.getTickets(searchId)
+          allTickets = [...allTickets, ...tickets]
+          stop = isStop
 
           if (stop) {
-            return { tickets: allTickets, stop: true }
+            dispatch({
+              type: 'data/tickets/fulfilled',
+              payload: {
+                tickets: allTickets,
+                stop: isStop,
+              },
+            })
+            return
           }
         } catch (err) {
           if (++retryCount >= maxRetries) throw err
@@ -322,7 +338,6 @@ const ticketsSlice = createSlice({
         state.loading = 'idle'
         state.allLoaded = action.payload.stop
         state.error = null
-
         // Фильтрация и сортировка данных
         state.dataFiltered = filterTickets(state.data.tickets, state.filter)
         state.displayedData = updateDisplayedData({
