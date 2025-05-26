@@ -2,19 +2,21 @@ import { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import TicketItem from '@/components/TicketItem'
-import fetchTickets from '@/store/asyncTickets'
-import { ticketsShowMore } from '@/store/actions'
+import { ticketsShowMore, fetchData } from '@/store/reducersToolkit'
 
 import style from './TicketList.module.scss'
 
 const TicketList = memo(() => {
   const dispatch = useDispatch()
-  const loading = useSelector((state) => state.loading)
+  const loading = useSelector((state) => {
+    console.log(state)
+  })
+  // const loading = useSelector((state) => state.loading)
   const error = useSelector((state) => state.error)
   const displayedData = useSelector((state) => state.displayedData)
 
   useEffect(() => {
-    dispatch(fetchTickets())
+    dispatch(fetchData())
   }, [dispatch])
 
   const handleShowMoreClick = () => {

@@ -16,14 +16,14 @@ class ApiRequest {
   }
 
   async getSearchId() {
-    if (localStorage.getItem('searchId')) {
-      return localStorage.getItem('searchId')
-    }
+    // if (localStorage.getItem('searchId')) {
+    //   return localStorage.getItem('searchId')
+    // }
 
     const url = new URL('search', this.#baseURL)
     const result = await this.#getData(url)
     const { searchId } = result
-    localStorage.setItem('searchId', searchId)
+    // localStorage.setItem('searchId', searchId)
 
     return searchId
   }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import { useDispatch } from 'react-redux'
 
-import { sortCheapest, sortFastest, sortOptimal } from '@/store/actions'
+import { sortCheapest, sortFastest, sortOptimal } from '@/store/reducersToolkit'
 
 import style from './Tabs.module.scss'
 
