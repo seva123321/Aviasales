@@ -8,10 +8,7 @@ import style from './TicketList.module.scss'
 
 const TicketList = memo(() => {
   const dispatch = useDispatch()
-  const loading = useSelector((state) => {
-    console.log(state)
-  })
-  // const loading = useSelector((state) => state.loading)
+  const loading = useSelector((state) => state.loading)
   const error = useSelector((state) => state.error)
   const displayedData = useSelector((state) => state.displayedData)
 
@@ -23,7 +20,7 @@ const TicketList = memo(() => {
     dispatch(ticketsShowMore())
   }
 
-  if (loading) {
+  if (loading !== 'idle') {
     return (
       <div className={style['loader--wrapper']}>
         <span className={style.loader} />

@@ -60,9 +60,9 @@ const getDataSorted = (sortType, filteredTickets) => {
 
 const getDataFilteredSorted = (state, filter) => {
   const filterIsChanged =
-    JSON.stringify(filter) === JSON.stringify(state.filter)
+    JSON.stringify(filter) !== JSON.stringify(state.filter)
 
-  const filteredTickets = !filterIsChanged
+  const filteredTickets = filterIsChanged
     ? filterTickets(state.data.tickets, filter)
     : state.dataFiltered
 
@@ -87,13 +87,9 @@ export const fetchSearchId = createAsyncThunk(
 
 export const fetchTickets = createAsyncThunk(
   'data/tickets',
-  async (searchId, { rejectWithValue }) => {
-    try {
-      const response = await api.getTickets(searchId)
-      return response
-    } catch (err) {
-      return rejectWithValue(err.message)
-    }
+  async (searchId) => {
+    const response = await api.getTickets(searchId)
+    return response
   }
 )
 
@@ -109,11 +105,11 @@ export const fetchData = createAsyncThunk(
       // 1. Получаем searchId
       const searchId = await dispatch(fetchSearchId()).unwrap()
       if (!searchId) throw new Error('Не удалось получить searchId')
+
       while (!stop && retryCount < maxRetries) {
         try {
           // 2. Получаем tickets
           const ticketsData = await dispatch(fetchTickets(searchId)).unwrap()
-          console.log('ticketsData > ', ticketsData)
 
           allTickets = [...allTickets, ...ticketsData.tickets]
           // tempNumber++
@@ -121,10 +117,8 @@ export const fetchData = createAsyncThunk(
           stop = ticketsData.stop
 
           if (stop) {
-            return
+            return { tickets: allTickets, stop: true }
           }
-
-          return ticketsData
         } catch (err) {
           if (++retryCount >= maxRetries) throw err
           await new Promise((resolve) => {
@@ -177,13 +171,11 @@ const ticketsSlice = createSlice({
         currentPage: 0,
         pageSize: state.pageSize,
       })
-      return {
-        ...state,
-        loading: '',
-        filter: newFilter,
-        dataFiltered: dataFilteredSorted,
-        displayedData,
-      }
+
+      state.currentPage = 0
+      state.filter = newFilter
+      state.dataFiltered = dataFilteredSorted
+      state.displayedData = displayedData
     },
     filterWithout(state) {
       const newFilter = { ...state.filter, without: !state.filter.without }
@@ -199,19 +191,15 @@ const ticketsSlice = createSlice({
         pageSize: state.pageSize,
       })
 
-      return {
-        ...newState,
-        currentPage: 0,
-        filter: {
-          ...newState.filter,
-          all: calculateFilterState(newState.filter),
-        },
-        dataFiltered: dataFilteredSorted,
-        displayedData,
+      state.currentPage = 0
+      state.filter = {
+        ...newState.filter,
+        all: calculateFilterState(newState.filter),
       }
+      state.dataFiltered = dataFilteredSorted
+      state.displayedData = displayedData
     },
-    filterOneTransfer(state, action) {
-      console.log('action, state > ', action, state)
+    filterOneTransfer(state) {
       const newFilter = { ...state.filter, one: !state.filter.one }
       const newState = {
         ...state,
@@ -225,16 +213,13 @@ const ticketsSlice = createSlice({
         pageSize: state.pageSize,
       })
 
-      return {
-        ...newState,
-        currentPage: 0,
-        filter: {
-          ...newState.filter,
-          all: calculateFilterState(newState.filter),
-        },
-        dataFiltered: dataFilteredSorted,
-        displayedData,
+      state.currentPage = 0
+      state.filter = {
+        ...newState.filter,
+        all: calculateFilterState(newState.filter),
       }
+      state.dataFiltered = dataFilteredSorted
+      state.displayedData = displayedData
     },
     filterTwoTransfer(state) {
       const newFilter = { ...state.filter, two: !state.filter.two }
@@ -250,16 +235,13 @@ const ticketsSlice = createSlice({
         pageSize: state.pageSize,
       })
 
-      return {
-        ...newState,
-        currentPage: 0,
-        filter: {
-          ...newState.filter,
-          all: calculateFilterState(newState.filter),
-        },
-        dataFiltered: dataFilteredSorted,
-        displayedData,
+      state.currentPage = 0
+      state.filter = {
+        ...newState.filter,
+        all: calculateFilterState(newState.filter),
       }
+      state.dataFiltered = dataFilteredSorted
+      state.displayedData = displayedData
     },
     filterThreeTransfer(state) {
       const newFilter = { ...state.filter, three: !state.filter.three }
@@ -275,74 +257,45 @@ const ticketsSlice = createSlice({
         currentPage: 0,
         pageSize: state.pageSize,
       })
-      return {
-        ...newState,
-        currentPage: 0,
-        filter: {
-          ...newState.filter,
-          all: calculateFilterState(newState.filter),
-        },
-        dataFiltered: dataFilteredSorted,
-        displayedData,
+      state.currentPage = 0
+      state.filter = {
+        ...newState.filter,
+        all: calculateFilterState(newState.filter),
       }
+      state.dataFiltered = dataFilteredSorted
+      state.displayedData = displayedData
     },
 
     sortCheapest(state) {
-      if (!state.dataFiltered?.length) return state
-
-      const sortedTickets = getSortCheapest(state.dataFiltered)
-      const displayedData = updateDisplayedData({
-        data: sortedTickets,
+      state.sortType = 'cheapest'
+      state.currentPage = 0
+      state.displayedData = updateDisplayedData({
+        data: getSortCheapest(state.dataFiltered),
         currentPage: 0,
         pageSize: state.pageSize,
       })
-
-      return {
-        ...state,
-        sortType: 'cheapest',
-        currentPage: 0,
-        displayedData,
-      }
     },
     sortFastest(state) {
-      if (!state.dataFiltered?.length) return state
-
-      const sortedTickets = getSortFastest(state.dataFiltered)
-      const displayedData = updateDisplayedData({
-        data: sortedTickets,
+      state.sortType = 'fastest'
+      state.currentPage = 0
+      state.displayedData = updateDisplayedData({
+        data: getSortFastest(state.dataFiltered),
         currentPage: 0,
         pageSize: state.pageSize,
       })
-
-      return {
-        ...state,
-        sortType: 'fastest',
-        currentPage: 0,
-        displayedData,
-      }
     },
     sortOptimal(state) {
-      if (!state.dataFiltered?.length) return state
-
-      const sortedTickets = getSortOptimal(state.dataFiltered)
-      const displayedData = updateDisplayedData({
-        data: sortedTickets,
+      state.sortType = 'optimal'
+      state.currentPage = 0
+      state.displayedData = updateDisplayedData({
+        data: getSortOptimal(state.dataFiltered),
         currentPage: 0,
         pageSize: state.pageSize,
       })
-
-      return {
-        ...state,
-        sortType: 'optimal',
-        currentPage: 0,
-        displayedData,
-      }
     },
 
     ticketsShowMore(state) {
-      if (!state.dataFiltered?.length) return state
       const newPage = state.currentPage + 1
-
       const dataFilteredSorted = getDataFilteredSorted(state, state.filter)
       const displayedData = updateDisplayedData({
         data: dataFilteredSorted,
@@ -350,11 +303,8 @@ const ticketsSlice = createSlice({
         pageSize: state.pageSize,
       })
 
-      return {
-        ...state,
-        currentPage: newPage,
-        displayedData,
-      }
+      state.displayedData = displayedData
+      state.currentPage = newPage
     },
   },
   extraReducers: (builder) => {
@@ -366,25 +316,23 @@ const ticketsSlice = createSlice({
       })
 
       // Обработка fetchTickets
-      .addCase(fetchTickets.pending, (state) => {
-        state.loading = 'pending'
-      })
       .addCase(fetchTickets.fulfilled, (state, action) => {
         state.data.tickets = [...state.data.tickets, ...action.payload.tickets]
         state.data.stop = action.payload.stop
-        state.loading = action.payload.stop ? 'idle' : 'pending'
+        state.loading = 'idle'
         state.allLoaded = action.payload.stop
+        state.error = null
 
         // Фильтрация и сортировка данных
-        state.dataFiltered = getDataFilteredSorted(state, state.filter)
-        state.dataFiltered = updateDisplayedData({
-          data: state.dataFiltered,
+        state.dataFiltered = filterTickets(state.data.tickets, state.filter)
+        state.displayedData = updateDisplayedData({
+          data: getDataSorted(state.sortType, state.dataFiltered),
           currentPage: state.currentPage,
           pageSize: state.pageSize,
         })
       })
+
       .addCase(fetchTickets.rejected, (state, action) => {
-        state.loading = 'failed'
         state.error = action.payload
       })
 
