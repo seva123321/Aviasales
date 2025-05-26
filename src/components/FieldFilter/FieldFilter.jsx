@@ -6,7 +6,7 @@ import {
   filterOneTransfer,
   filterTwoTransfer,
   filterThreeTransfer,
-} from '@/store/actions'
+} from '@/store/reducersToolkit'
 
 import style from './FieldFilter.module.scss'
 

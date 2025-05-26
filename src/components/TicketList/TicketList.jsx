@@ -2,8 +2,7 @@ import { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import TicketItem from '@/components/TicketItem'
-import fetchTickets from '@/store/asyncTickets'
-import { ticketsShowMore } from '@/store/actions'
+import { ticketsShowMore, fetchData } from '@/store/reducersToolkit'
 
 import style from './TicketList.module.scss'
 
@@ -14,14 +13,14 @@ const TicketList = memo(() => {
   const displayedData = useSelector((state) => state.displayedData)
 
   useEffect(() => {
-    dispatch(fetchTickets())
+    dispatch(fetchData())
   }, [dispatch])
 
   const handleShowMoreClick = () => {
     dispatch(ticketsShowMore())
   }
 
-  if (loading) {
+  if (loading !== 'idle') {
     return (
       <div className={style['loader--wrapper']}>
         <span className={style.loader} />
