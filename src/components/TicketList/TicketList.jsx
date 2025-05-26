@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import TicketItem from '@/components/TicketItem'
-import { ticketsShowMore, fetchData } from '@/store/reducersToolkit'
+import { ticketsShowMore, fetchData } from '@/store/reducer'
 
 import style from './TicketList.module.scss'
 
